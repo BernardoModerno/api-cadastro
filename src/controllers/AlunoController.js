@@ -8,7 +8,7 @@ class AlunoController {
       order: [['id', 'DESC'], [Foto, 'id', 'DESC']],
       include: {
         model: Foto,
-        attributes: ['filename'],
+        attributes: ['url', 'filename'],
       },
     });
     res.json(alunos);
@@ -16,15 +16,7 @@ class AlunoController {
 
   async store(req, res) {
     try {
-      const aluno = await Aluno.findByPk(id, {
-        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
-        order: [['id', 'DESC'], [Foto, 'id', 'DESC']],
-        include: {
-          model: Foto,
-          attributes: ['filename'],
-        },
-      });
-
+      const aluno = await Aluno.create(req.body);
       return res.json(aluno);
     } catch (e) {
       return res.status(400).json({
@@ -43,7 +35,15 @@ class AlunoController {
         });
       }
 
-      const aluno = await Aluno.findByPk(id);
+      const aluno = await Aluno.findByPk(id, {
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Foto, 'id', 'DESC']],
+        include: {
+          model: Foto,
+          attributes: ['url', 'filename'],
+        },
+      });
+
 
       if (!aluno) {
         return res.status(400).json({
